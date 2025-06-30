@@ -42,7 +42,7 @@ while True:
         frame = frame[:frame.shape[0] // 2, :]
     else:
         frame = frame[frame.shape[0] // 2:, :]
-
+    print(f"frame.shape: {frame.shape}")
     eyes = coarse_find(frame)
     if len(eyes) > 0:
         prev_eyes = eyes.copy()
