@@ -5,7 +5,7 @@ import os
 import sys
 import math
 from math import pi
-from trackingv2 import (coarse_find, remove_bright_spots, find_dark_area, threshold_images, 
+from tracking_algo import (coarse_find, remove_bright_spots, find_dark_area, threshold_images, 
                         get_contours, fit_ellipse, check_flip, prepare_frame, process_eye_crop, 
                         generate_ellipse_candidates, calculate_ellipse_scores, select_best_ellipse, 
                         apply_smoothing, display_results, check_blink)

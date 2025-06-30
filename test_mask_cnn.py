@@ -8,16 +8,11 @@ import numpy as np
 import tensorflow as tf
 from tracking_algo import coarse_find, process_eye_crop
 
-# Load TFLite interpreters
-interpreter_x = tf.lite.Interpreter(model_path="eye_tracking_model_x.tflite")
-interpreter_x.allocate_tensors()
-input_details_x = interpreter_x.get_input_details()
-output_details_x = interpreter_x.get_output_details()
+interpreter = tf.lite.Interpreter(model_path="mask_model.tflite")
+interpreter.allocate_tensors()
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
 
-interpreter_y = tf.lite.Interpreter(model_path="eye_tracking_model_y.tflite")
-interpreter_y.allocate_tensors()
-input_details_y = interpreter_y.get_input_details()
-output_details_y = interpreter_y.get_output_details()
 
 print("TFLite models loaded.")
 
@@ -26,8 +21,7 @@ cap = cv2.VideoCapture("videos/igor2L.mp4")
 if not cap.isOpened():
     raise IOError("Cannot open video")
 
-# Configuration
-top_half = False  # change to True to track top half
+top_half = True
 fps = cap.get(cv2.CAP_PROP_FPS)
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -68,9 +62,9 @@ while True:
     image = np.reshape(image, (1, 128, 128, 1)).astype(np.float32)
 
     # Inference using TFLite (x coordinate)
-    interpreter_x.set_tensor(input_details_x[0]['index'], image)
-    interpreter_x.invoke()
-    px = interpreter_x.get_tensor(output_details_x[0]['index'])[0][0] * size
+    interpreter.set_tensor(input_details_x[0]['index'], image)
+    interpreter.invoke()
+    px = interpreter.get_tensor(output_details_x[0]['index'])[0][0] * size
 
     # Inference using TFLite (y coordinate)
     interpreter_y.set_tensor(input_details_y[0]['index'], image)

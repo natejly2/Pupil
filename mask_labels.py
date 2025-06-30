@@ -5,7 +5,7 @@ import os
 import sys
 import math
 from math import pi
-from trackingv2 import (coarse_find, remove_bright_spots, find_dark_area, threshold_images, 
+from tracking_algo import (coarse_find, remove_bright_spots, find_dark_area, threshold_images, 
                         get_contours, fit_ellipse, check_flip, prepare_frame, process_eye_crop, 
                         generate_ellipse_candidates, calculate_ellipse_scores, select_best_ellipse, 
                         apply_smoothing, display_results, check_blink)
@@ -39,8 +39,8 @@ if __name__ == "__main__":
     num_frames = len([f for f in os.listdir(frames_folder) if f.endswith('.png')])
     if not os.path.exists("best_masks"):
         os.makedirs("best_masks")
-    if not os.path.exists("eye_crops"):
-        os.makedirs("eye_crops")
+    if not os.path.exists("images"):
+        os.makedirs("images")
     for i in range(num_frames):
         # status update
         if i % 100 == 0:
@@ -109,13 +109,13 @@ if __name__ == "__main__":
         convex = cv2.convexHull(contour)
         convex = contour
         export = np.zeros_like(eye_gray)
-        cv2.drawContours(eye_gray, [convex], -1, (255, 255, 255), 2)
+        # cv2.drawContours(eye_gray, [convex], -1, (255, 255, 255), 2)
         cv2.drawContours(export, [convex], -1, 255, -1)
-        cv2.imshow("eye_crop", eye_gray)
+        cv2.imshow("images", eye_gray)
         cv2.imshow("export", export)
-        cv2.imwrite(f"eye_crops/{i}.png", export)
+        cv2.imwrite(f"images/{i}.png", eye_gray)
         cv2.imwrite(f"best_masks/{i}.png", export)
-        cv2.imwrite(f"frames/{i}.png", frame)
+        # cv2.imwrite(f"frames/{i}.png", frame)
         frame_idx += 1
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
