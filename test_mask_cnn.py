@@ -6,7 +6,7 @@ import cv2
 import time
 import numpy as np
 import tensorflow as tf
-from tracking_algo import coarse_find, process_eye_crop, fit_ellipse
+from tracking_methods import coarse_find, process_eye_crop, fit_ellipse
 
 interpreter = tf.lite.Interpreter(model_path="mask_model.tflite")
 interpreter.allocate_tensors()
@@ -22,9 +22,6 @@ if not cap.isOpened():
     raise IOError("Cannot open video")
 
 top_half = False
-
-x_alpha = .5
-y_alpha = .5
 
 ema = None
 prev_eyes = None
@@ -79,7 +76,7 @@ while True:
         h *= scale
         ellipse = ((cx, cy), (w, h), ang)
     cv2.ellipse(frame, ellipse, (0, 255, 0), 2)
-    cv2.circle(frame, (int(cx), int(cy)), 4, (0, 0, 255), -1)
+    cv2.circle(frame, (int(cx), int(cy)), 2, (0, 0, 255), -1)
 
     # overlay on frame
     cv2.imshow("original", frame)

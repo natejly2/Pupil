@@ -6,7 +6,7 @@ import cv2
 import time
 import numpy as np
 import tensorflow as tf
-from tracking_algo import coarse_find, process_eye_crop
+from tracking_methods import coarse_find, process_eye_crop
 
 # Load TFLite interpreters
 interpreter_x = tf.lite.Interpreter(model_path="eye_tracking_model_x.tflite")
