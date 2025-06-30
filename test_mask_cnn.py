@@ -22,11 +22,6 @@ if not cap.isOpened():
     raise IOError("Cannot open video")
 
 top_half = True
-fps = cap.get(cv2.CAP_PROP_FPS)
-frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-out = cv2.VideoWriter('output_video.mp4', fourcc, fps, (frame_width, frame_height))
 
 x_alpha = .5
 y_alpha = .5
@@ -56,46 +51,20 @@ while True:
     else:
         continue
 
-    # Preprocess eye image
     eye_gray, x, y, size = process_eye_crop(frame, eyes)
-    image = cv2.resize(eye_gray, (128, 128)) / 255.0
-    image = np.reshape(image, (1, 128, 128, 1)).astype(np.float32)
-
-    # Inference using TFLite (x coordinate)
-    interpreter.set_tensor(input_details_x[0]['index'], image)
+    # run inference to get mask
+    eye_gray = cv2.resize(eye_gray, (128, 128))  #
+    eye_gray = eye_gray / 255.0  # Normalize to [0, 1]
+    eye_gray = eye_gray.reshape((1, 128, 128, 1))
+    interpreter.set_tensor(input_details[0]['index'], eye_gray)
     interpreter.invoke()
-    px = interpreter.get_tensor(output_details_x[0]['index'])[0][0] * size
-
-    # Inference using TFLite (y coordinate)
-    interpreter_y.set_tensor(input_details_y[0]['index'], image)
-    interpreter_y.invoke()
-    py = interpreter_y.get_tensor(output_details_y[0]['index'])[0][0] * size
-
-    current = np.array([px+x, py+y], dtype=np.float32)
-    alphas = np.array([x_alpha, y_alpha], dtype=np.float32)
-    if ema is None:
-        ema = current
-    else:
-        ema = alphas * current + (1 - alphas) * ema
-
-    ex, ey = ema
-
-    # Draw tracking point and frame number
-    cv2.circle(frame, (int(ex), int(ey)), 3, (200, 200, 100), -1)
-    cv2.putText(frame, f"Frame: {frame_idx}", (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-
-    # Show and save frame
-    cv2.imshow("CNN", frame)
-    out.write(frame)
-
+    pred_mask = interpreter.get_tensor(output_details[0]['index'])
+    pred_mask = (pred_mask > 0.5).astype("uint8")
+    pred_mask = pred_mask[0].squeeze()  # Remove batch dimension
+    pred_mask = cv2.resize(pred_mask, (eye_gray.shape[2], eye_gray.shape[1]))
+    # show the mask
+    cv2.imshow("mask", pred_mask * 255)
+    # apply mask to eye_gray
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-    frame_idx += 1
 
-# Cleanup
-cap.release()
-out.release()
-cv2.destroyAllWindows()
-print(f"Processed {frame_idx} frames in {time.time() - start_time:.2f} seconds")
-print(f"FPS: {frame_idx / (time.time() - start_time):.2f}")
