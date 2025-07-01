@@ -17,14 +17,14 @@ output_details = interpreter.get_output_details()
 print("TFLite models loaded.")
 
 # Video capture
-cap = cv2.VideoCapture("videos/alex.mp4")
+cap = cv2.VideoCapture("videos/igor1.mp4")
 if not cap.isOpened():
     raise IOError("Cannot open video")
 x_alpha = .75
 y_alpha = .75
 rotation_alpha = 1
 width_alpha = .5
-height_alpha = .1
+height_alpha = .5
 top_half = True
 ema = None
 prev_eyes = None
@@ -51,7 +51,11 @@ while True:
         elif prev_eyes is not None:
             eyes = prev_eyes
         else:
-            print("No eyes")
+            cv2.putText(frame, "No Eyes", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            cv2.imshow("original", frame)
+            # frame_idx += 1
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
             continue
 
     eye_gray, x, y, size = process_eye_crop(frame, eyes)
@@ -61,7 +65,6 @@ while True:
     eye_gray = eye_gray / 255.0  
     eye_gray = eye_gray.reshape((1, 128, 128, 1))
     # threshold the image
-
 
     # convert to float32
     eye_gray = eye_gray.astype(np.float32)
@@ -102,12 +105,10 @@ while True:
         (cx, cy), (w, h), ang = ellipse
         # cv2.rectangle(frame, (x, y), (x + size, y + size), (0, 255, 0), 2)
         cv2.ellipse(frame, ellipse, (0, 255, 0), 2)
-        cv2.circle(frame, (int(cx), int(cy)), 2, (0, 0, 255), -1)
+        cv2.circle(frame, (int(cx), int(cy)), 3, (0, 0, 255), -1)
 
     else:
         cv2.putText(frame, "No Eyes", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-
-
     # overlay on frame
     cv2.imshow("original", frame)
     frame_idx += 1
