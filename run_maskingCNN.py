@@ -17,7 +17,7 @@ output_details = interpreter.get_output_details()
 print("TFLite models loaded.")
 
 # Video capture
-cap = cv2.VideoCapture("videos/2L.mp4")
+cap = cv2.VideoCapture("videos/alex.mp4")
 if not cap.isOpened():
     raise IOError("Cannot open video")
 x_alpha = .75
@@ -52,6 +52,7 @@ while True:
             eyes = prev_eyes
         else:
             print("No eyes")
+            continue
 
     eye_gray, x, y, size = process_eye_crop(frame, eyes)
 
@@ -75,7 +76,7 @@ while True:
     # contours 
     contours, _ = cv2.findContours(pred_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contour = max(contours, key=cv2.contourArea) if contours else None
-    contour = cv2.convexHull(contour) if contour is not None else None
+    # contour = cv2.convexHull(contour) if contour is not None else None
     ellipse = fit_ellipse(contour) if contour is not None and len(contour) >= 5 else None
 
     # adjust ellipse coordinates and resize 

@@ -106,11 +106,10 @@ if __name__ == "__main__":
         contour = cv2.findContours(best_threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         # show the largest contour
         contour = max(contour[0], key=cv2.contourArea)
-        convex = cv2.convexHull(contour)
-        # convex = contour
+        # no convex here because bright spots
         export = np.zeros_like(eye_gray)
         # cv2.drawContours(eye_gray, [convex], -1, (255, 255, 255), 2)
-        cv2.drawContours(export, [convex], -1, 255, -1)
+        cv2.drawContours(export, [contour], -1, 255, -1)
         cv2.imshow("images", eye_gray)
         cv2.imshow("export", export)
         cv2.imwrite(f"images/{i}.png", eye_gray)
