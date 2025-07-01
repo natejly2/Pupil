@@ -17,7 +17,7 @@ output_details = interpreter.get_output_details()
 print("TFLite models loaded.")
 
 # Video capture
-cap = cv2.VideoCapture("videos/2L.mp4")
+cap = cv2.VideoCapture("videos/4.mp4")
 if not cap.isOpened():
     raise IOError("Cannot open video")
 x_alpha = .75
@@ -44,7 +44,7 @@ while True:
         frame = frame[:frame.shape[0] // 2, :]
     else:
         frame = frame[frame.shape[0] // 2:, :]
-    if frame_idx % 10 == 0:  # Process every frame
+    if frame_idx % 10 == 0: 
         eyes = coarse_find(frame,min_size=(200, 200))
         if len(eyes) > 0:
             prev_eyes = eyes.copy()
@@ -108,7 +108,7 @@ while True:
         cv2.circle(frame, (int(cx), int(cy)), 3, (0, 0, 255), -1)
 
     else:
-        cv2.putText(frame, "No Eyes", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        cv2.putText(frame, "No Eyes", (100, 300), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
     # overlay on frame
     cv2.imshow("original", frame)
     frame_idx += 1
