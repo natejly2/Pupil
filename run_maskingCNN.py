@@ -6,7 +6,7 @@ import cv2
 import time
 import numpy as np
 import tensorflow as tf
-from tracking_methods import coarse_find, process_eye_crop, fit_ellipse
+from tracking_methods import coarse_find, process_eye_crop, fit_ellipse, apply_smoothing
 
 interpreter = tf.lite.Interpreter(model_path="mask_model.tflite")
 interpreter.allocate_tensors()
@@ -20,6 +20,11 @@ print("TFLite models loaded.")
 cap = cv2.VideoCapture("videos/2L.mp4")
 if not cap.isOpened():
     raise IOError("Cannot open video")
+x_alpha = .75
+y_alpha = .75
+rotation_alpha = 1
+width_alpha = .5
+height_alpha = .1
 
 top_half = False
 
@@ -27,7 +32,7 @@ ema = None
 prev_eyes = None
 frame_idx = 0
 start_time = time.time()
-
+prev_ellipse = None
 # Frame processing loop
 while True:
     ret, frame = cap.read()
@@ -65,6 +70,8 @@ while True:
     contours, _ = cv2.findContours(pred_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contour = max(contours, key=cv2.contourArea) if contours else None
     ellipse = fit_ellipse(contour) if contour is not None and len(contour) >= 5 else None
+    # if ellipse is None:
+    #     ellipse = prev_ellipse if prev_ellipse is not None else ((0, 0), (0, 0), 0)
     # draw ellipse on the original frame
     # adjust ellipse coordinates and resize 
     scale = size / 128.0
@@ -74,7 +81,14 @@ while True:
         cy = cy * scale + y
         w *= scale
         h *= scale
-        ellipse = ((cx, cy), (w, h), ang)
+        ellipse = (cx, cy), (w, h), ang
+    # smooth_ellipse, ema = apply_smoothing(ellipse, x, y, ema, x_alpha=x_alpha,
+    #                                          y_alpha=y_alpha,
+    #                                          width_alpha=width_alpha,
+    #                                          height_alpha=height_alpha,
+    #                                          rotation_alpha=rotation_alpha)
+    # (cx, cy), (w, h), ang = smooth_ellipse
+
     cv2.ellipse(frame, ellipse, (0, 255, 0), 2)
     cv2.circle(frame, (int(cx), int(cy)), 2, (0, 0, 255), -1)
 
