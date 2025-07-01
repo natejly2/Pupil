@@ -17,16 +17,16 @@ output_details = interpreter.get_output_details()
 print("TFLite models loaded.")
 
 # Video capture
-cap = cv2.VideoCapture("videos/2L.mp4")
+cap = cv2.VideoCapture("videos/4.mp4")
 if not cap.isOpened():
     raise IOError("Cannot open video")
 x_alpha = .75
 y_alpha = .75
 rotation_alpha = 1
 width_alpha = .5
-height_alpha = .1
+height_alpha = .25
 
-top_half = False
+top_half = True
 
 ema = None
 prev_eyes = None
@@ -51,7 +51,7 @@ while True:
         elif prev_eyes is not None:
             eyes = prev_eyes
         else:
-            continue
+            print("No eyes")
 
     eye_gray, x, y, size = process_eye_crop(frame, eyes)
     # run inference to get mask
@@ -82,12 +82,16 @@ while True:
         w *= scale
         h *= scale
         ellipse = (cx, cy), (w, h), ang
-    # smooth_ellipse, ema = apply_smoothing(ellipse, x, y, ema, x_alpha=x_alpha,
-    #                                          y_alpha=y_alpha,
-    #                                          width_alpha=width_alpha,
-    #                                          height_alpha=height_alpha,
-    #                                          rotation_alpha=rotation_alpha)
-    # (cx, cy), (w, h), ang = smooth_ellipse
+
+    if ellipse is None:
+        print("Blink?")
+    else:
+        ellipse, ema = apply_smoothing(ellipse, 0, 0, ema, x_alpha=x_alpha,
+                                                y_alpha=y_alpha,
+                                                width_alpha=width_alpha,
+                                                height_alpha=height_alpha,
+                                                rotation_alpha=rotation_alpha)
+        (cx, cy), (w, h), ang = ellipse
 
     cv2.ellipse(frame, ellipse, (0, 255, 0), 2)
     cv2.circle(frame, (int(cx), int(cy)), 2, (0, 0, 255), -1)
