@@ -112,15 +112,78 @@ if __name__ == "__main__":
         cv2.drawContours(export, [contour], -1, 255, -1)
         cv2.imshow("images", eye_gray)
         cv2.imshow("export", export)
-        cv2.imwrite(f"images/{i}.png", eye_gray)
-        cv2.imwrite(f"best_masks/{i}.png", export)
+        cv2.imwrite(f"images/{frame_idx}.png", eye_gray)
+        cv2.imwrite(f"best_masks/{frame_idx}.png", export)
         # cv2.imwrite(f"frames/{i}.png", frame)
         frame_idx += 1
+
+        # brightness augment
+        bright = np.ones_like(eye_gray) * np.random.randint(10, 70)
+        brightup = cv2.add(eye_gray, bright)
+        cv2.imshow("brightup", brightup)
+        cv2.imwrite(f"images/{frame_idx}.png", brightup)
+        cv2.imwrite(f"best_masks/{frame_idx}.png", export)
+        frame_idx += 1
+
+        # subtract brightness augment
+        bright = np.ones_like(eye_gray) * np.random.randint(10, 70)
+        brightdown = cv2.subtract(eye_gray, bright)
+        cv2.imshow("brightdown", brightdown)
+        cv2.imwrite(f"images/{frame_idx}.png", brightdown)
+        cv2.imwrite(f"best_masks/{frame_idx}.png", export)
+        frame_idx += 1
+
+        # sharpness augment
+        sharpval = np.random.randint(5, 10)
+        kernel = np.array([[0, -1, 0],
+                           [-1, sharpval, -1],
+                           [0, -1, 0]])
+        sharp = cv2.filter2D(eye_gray, -1, kernel)
+        cv2.imshow("sharp", sharp)
+        cv2.imwrite(f"images/{frame_idx}.png", sharp)
+        cv2.imwrite(f"best_masks/{frame_idx}.png", export)
+        frame_idx += 1
+
+        #decrease sharpness augment
+        kernel = np.ones((5, 5), np.float32) / 25
+        sharpdown = cv2.filter2D(eye_gray, -1, kernel)
+        cv2.imshow("sharpdown", sharpdown)
+        cv2.imwrite(f"images/{frame_idx}.png", sharpdown)
+        cv2.imwrite(f"best_masks/{frame_idx}.png", export)
+        frame_idx += 1
+
+        #contrast augment
+        contrast = np.random.uniform(0.5, 1.5)
+        eye_gray = cv2.convertScaleAbs(eye_gray, alpha=contrast, beta=0)
+        cv2.imshow("contrast", eye_gray)
+        cv2.imwrite(f"images/{frame_idx}.png", eye_gray)
+        cv2.imwrite(f"best_masks/{frame_idx}.png", export)
+        frame_idx += 1
+
+
+        # blur augment
+        blurval = np.random.randint(1, 6) * 2 - 1
+        blur = cv2.GaussianBlur(eye_gray, (blurval, blurval), 0)
+        cv2.imshow("blur", blur)
+        cv2.imwrite(f"images/{frame_idx}.png", blur)
+        cv2.imwrite(f"best_masks/{frame_idx}.png", export)
+        frame_idx += 1
+
+        # gamma augment
+        gamma = np.random.uniform(0.5, 2.0)
+        invGamma = 1.0 / gamma
+        table = np.array([((i / 255.0) ** invGamma) * 255 for i in range(256)]).astype("uint8")
+        gamma_corrected = cv2.LUT(eye_gray, table)
+        cv2.imshow("gamma_corrected", gamma_corrected)
+        cv2.imwrite(f"images/{frame_idx}.png", gamma_corrected)
+        cv2.imwrite(f"best_masks/{frame_idx}.png", export)
+        frame_idx += 1
+
+
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
 
     # save video
     end_time = time.time()
-    print(f"FPS: {frame_idx / (end_time - start_time):.2f}")
     cv2.destroyAllWindows()
