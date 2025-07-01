@@ -6,7 +6,7 @@ import sys
 import math
 from math import pi
 mask = np.zeros((128, 128), dtype=np.uint8)
-def coarse_find(frame):
+def coarse_find(frame, min_size=(150, 150)):
     """Uses Haar filters to crop pic in to the eye"""
     eye_cascade = cv2.CascadeClassifier(
         cv2.data.haarcascades + 'haarcascade_eye.xml'
@@ -17,7 +17,7 @@ def coarse_find(frame):
         # these params seem to give a good tradeoff between speed and accuracy
         scaleFactor=1.05,
         minNeighbors=3,
-        minSize=(150, 150)
+        minSize=min_size
     )
     return eyes
 
@@ -345,7 +345,7 @@ def display_results(frame, thresholded_images, contour_images, ellipse_images,
 
 def main():
 
-    video_path = "videos/igor1.mp4"
+    video_path = "videos/2L.mp4"
     TOP = True
     debug = True
     x_alpha = .75
