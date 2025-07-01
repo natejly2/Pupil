@@ -4,10 +4,8 @@ import cv2
 
 VIDEO_FOLDER  = "videos"
 OUTPUT_FOLDER = "frames"
-SPLIT_FOLDER  = "splitvids"
 
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
-os.makedirs(SPLIT_FOLDER, exist_ok=True)
 
 video_paths = sorted(glob.glob(os.path.join(VIDEO_FOLDER, "*.mp4")))
 if not video_paths:
@@ -65,4 +63,4 @@ for vp in video_paths:
         global_idx += 1
     cv2.imwrite(os.path.join(OUTPUT_FOLDER, f"{global_idx}.png"), frame * 0)
     global_idx += 1
-print(f"✅ Saved {global_idx} frames in '{OUTPUT_FOLDER}/' and split videos in '{SPLIT_FOLDER}/'")
+print(f"✅ Saved {global_idx} frames in '{OUTPUT_FOLDER}' folder.")
