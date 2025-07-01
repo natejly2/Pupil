@@ -17,7 +17,7 @@ output_details = interpreter.get_output_details()
 print("TFLite models loaded.")
 
 # Video capture
-cap = cv2.VideoCapture("videos/igor1.mp4")
+cap = cv2.VideoCapture("videos/2L.mp4")
 if not cap.isOpened():
     raise IOError("Cannot open video")
 x_alpha = .75
