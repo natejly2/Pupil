@@ -179,6 +179,27 @@ if __name__ == "__main__":
         cv2.imwrite(f"best_masks/{frame_idx}.png", export)
         frame_idx += 1
 
+        # rotate augment
+        angle = np.random.randint(-30, 30)
+        h, w = eye_gray.shape[:2]
+        center = (w // 2, h // 2)
+        rotation_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
+        rotated_gray = cv2.warpAffine(eye_gray, rotation_matrix, (w, h))
+        rotated_mask = cv2.warpAffine(export, rotation_matrix, (w, h))
+        cv2.imwrite(f"images/{frame_idx}.png", rotated_gray)
+        cv2.imshow("rotated", rotated_gray)
+        cv2.imwrite(f"best_masks/{frame_idx}.png", rotated_mask)
+        frame_idx += 1
+
+        # stretch/compress augment
+        stretch_factor = np.random.uniform(0.8, 1.2)
+        stretched_gray = cv2.resize(eye_gray, None, fx=stretch_factor, fy=1.0)
+        stretched_mask = cv2.resize(export, None, fx=stretch_factor, fy=1.0)
+        cv2.imwrite(f"images/{frame_idx}.png", stretched_gray)
+        cv2.imshow("stretched", stretched_gray)
+        cv2.imwrite(f"best_masks/{frame_idx}.png", stretched_mask)
+        frame_idx += 1
+
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
