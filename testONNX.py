@@ -16,7 +16,7 @@ input_name = session.get_inputs()[0].name
 output_name = session.get_outputs()[0].name
 print("Registered providers:", ort.get_available_providers())
 
-cap = cv2.VideoCapture("videos/igor1.mp4")
+cap = cv2.VideoCapture("videos/nate1.mp4")
 if not cap.isOpened():
     raise IOError("Cannot open video")
 
@@ -25,7 +25,7 @@ x_alpha, y_alpha = .75, .75
 rotation_alpha = 1
 width_alpha, height_alpha = .5, .5
 
-top_half = False
+top_half = True
 ema = None
 prev_eyes = None
 prev_ellipse = None
@@ -40,8 +40,12 @@ while True:
 
     # Crop top or bottom half
     h, w = frame.shape[:2]
-    frame = frame[:h//2] if top_half else frame[h//2:]
-
+    frame = frame[:h//2] if top_half else frame[h//2:]  
+    # get average color of frame
+    avg_color = cv2.mean(frame)[:3]
+    if avg_color < (50, 50, 50):
+        cv2.putText(frame, "NO PERSON", (50, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
     # Every 5th frame, detect eyes
     if frame_idx % 5 == 0:
         eyes = coarse_find(frame, min_size=(200, 200))
