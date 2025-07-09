@@ -16,7 +16,7 @@ input_name = session.get_inputs()[0].name
 output_name = session.get_outputs()[0].name
 print("Registered providers:", ort.get_available_providers())
 
-cap = cv2.VideoCapture("videos/nate1.mp4")
+cap = cv2.VideoCapture("TestVids/nate1.mp4")
 if not cap.isOpened():
     raise IOError("Cannot open video")
 
@@ -33,19 +33,24 @@ frame_idx = 0
 start_time = time.time()
 
 while True:
-    ret, frame = cap.read()
+    ret, oframe = cap.read()
     cap.set(cv2.CAP_PROP_FPS, 30)
     if not ret:
         break
 
     # Crop top or bottom half
-    h, w = frame.shape[:2]
-    frame = frame[:h//2] if top_half else frame[h//2:]  
+    h, w = oframe.shape[:2]
+    frame = oframe[:h//2] if top_half else oframe[h//2:]  
     # get average color of frame
     avg_color = cv2.mean(frame)[:3]
     if avg_color < (50, 50, 50):
         cv2.putText(frame, "NO PERSON", (50, 50),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        frame_idx += 1
+        cv2.imshow("original", frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+        continue
     # Every 5th frame, detect eyes
     if frame_idx % 5 == 0:
         eyes = coarse_find(frame, min_size=(200, 200))
