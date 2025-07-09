@@ -1,2 +1,3 @@
 *.png
 *.keras
+!docImages/*.png
