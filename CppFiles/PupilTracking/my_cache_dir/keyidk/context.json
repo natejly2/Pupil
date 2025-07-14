@@ -1,0 +1,287 @@
+{
+ "config": {
+  "passes": [
+   {
+    "name": "init",
+    "plugin": "vaip-pass_init"
+   },
+   {
+    "name": "vaiml_partition",
+    "plugin": "vaip-pass_vaiml_partition",
+    "vaimlConfig": {
+     "enableF32ToBf16Conversion": true
+    }
+   }
+  ],
+  "cacheDir": "my_cache_dir",
+  "cacheKey": "keyidk",
+  "version": {
+   "versionInfos": [
+    {
+     "packageName": "vai-rt",
+     "commit": "git_id: 2dfed8d2ca17bb21516d2f2aa5f74b71fb34849c build 2698 at 20250626173749",
+     "version": "v1.0"
+    },
+    {
+     "packageName": "onnxruntime",
+     "commit": "39e585ff2bf8c91739424aacabbab027f4d9aa17",
+     "version": "39e585"
+    },
+    {
+     "packageName": "glog",
+     "commit": "b33e3bad4c46c8a6345525fd822af355e5ef9446",
+     "version": "v0.6.0"
+    },
+    {
+     "packageName": "gsl",
+     "commit": "a3534567187d2edc428efd3f13466ff75fe5805c",
+     "version": "v4.0.0"
+    },
+    {
+     "packageName": "json",
+     "commit": "bc889afb4c5bf1c0d8ee29ef35eaaf4c8bef8a5d",
+     "version": "v3.11.2"
+    },
+    {
+     "packageName": "protobuf",
+     "commit": "f0dc78d7e6e331b8c6bb2d5283e06aa26883ca7c",
+     "version": "v21.12"
+    },
+    {
+     "packageName": "onnxruntime",
+     "commit": "39e585ff2bf8c91739424aacabbab027f4d9aa17",
+     "version": "test-tag-5108-g39e58"
+    },
+    {
+     "packageName": "xcompiler",
+     "commit": "5140b2146d824accc1ad1bcc56d117f50612e301",
+     "version": "rc3-2172-g5140b"
+    },
+    {
+     "packageName": "xir",
+     "commit": "ba6a25e46396d855083133d4be0d8657c19bf52b",
+     "version": "rc3-76-gba6a2"
+    },
+    {
+     "packageName": "target-factory",
+     "commit": "893f892e250eebc3142f0a386d0ec0440357d0e9",
+     "version": "SR-945504-524-g893f"
+    },
+    {
+     "packageName": "trace-logging",
+     "commit": "02720323ad17edf139f1be97bb8eb56c6c24d06d",
+     "version": "rc3-4-g0272"
+    },
+    {
+     "packageName": "vart",
+     "commit": "beb4999cb68f4d95618f7d8236dd98ca7636d1a6",
+     "version": "rc3-307-gbeb4"
+    },
+    {
+     "packageName": "graph-engine",
+     "commit": "7490fe09414d6c000864eac6d1a765fe9dc09bca",
+     "version": "rc3-245-g7490"
+    },
+    {
+     "packageName": "DynamicDispatch",
+     "commit": "d87696bed67d28f66728821cf9d31fcc59c2433f",
+     "version": "RAI-1.3GA-694-gd876"
+    },
+    {
+     "packageName": "VAIP",
+     "commit": "589f17c0613d8d445d06580db5f6a559c3dab163",
+     "version": "cp_dev_no_morphizen-370-g589f"
+    },
+    {
+     "packageName": "morphizen",
+     "commit": "2afcbbaa998a360ef33de1252a4fe3be65da9e15",
+     "version": "2afcbb"
+    }
+   ]
+  },
+  "onnxPath": "C:/Desktop/Pupil/model.onnx",
+  "sessionOptions": {
+   "xclbin": "C:/Program Files/RyzenAI/1.5.0/voe - 4.0 - win_amd64/xclbins/phoenix/4x4.xclbin",
+   "cache_key": "keyidk",
+   "cache_dir": "my_cache_dir",
+   "session_options": "1890955024352",
+   "config_file": "C:/Users/VETi/source/repos/PupilTracking/x64/Release/vitisai_config.json"
+  },
+  "onnxMd5File": "5ae1b9071c0fe560f7f5c075fa35fb65",
+  "onnxMd5A": "089f1dfaf96c30628150bcef95e615dc",
+  "onnxMd5B": "d3109c647b609fd96f127a28cbc33f25"
+ },
+ "events": [
+  {
+   "name": "check_cache_hit",
+   "ph": "X",
+   "ts": "2106",
+   "pid": "1944",
+   "tid": "4484",
+   "args": {
+    "memUsage": {
+     "peakMemoryInBytes": "100544512",
+     "currentMemoryInBytes": "8192"
+    }
+   },
+   "dur": "24"
+  },
+  {
+   "id": "check_cache_hit_mem_usage_1",
+   "ph": "v",
+   "ts": "2106",
+   "pid": "1944",
+   "args": {
+    "dumps": {
+     "process_totals": {
+      "peak_memory": "5fe3000",
+      "current_memory": "5fe3000"
+     }
+    }
+   }
+  },
+  {
+   "id": "check_cache_hit_mem_usage_2",
+   "ph": "v",
+   "ts": "2131",
+   "pid": "1944",
+   "args": {
+    "dumps": {
+     "process_totals": {
+      "peak_memory": "5fe5000",
+      "current_memory": "5fe5000"
+     }
+    }
+   }
+  },
+  {
+   "name": "0-init@vaip-pass_init",
+   "ph": "X",
+   "ts": "3570",
+   "pid": "1944",
+   "tid": "4484",
+   "args": {
+    "memUsage": {
+     "peakMemoryInBytes": "102764544",
+     "currentMemoryInBytes": "12288"
+    }
+   },
+   "dur": "8"
+  },
+  {
+   "id": "0-init@vaip-pass_init_mem_usage_1",
+   "ph": "v",
+   "ts": "3570",
+   "pid": "1944",
+   "args": {
+    "dumps": {
+     "process_totals": {
+      "peak_memory": "6201000",
+      "current_memory": "6201000"
+     }
+    }
+   }
+  },
+  {
+   "id": "0-init@vaip-pass_init_mem_usage_2",
+   "ph": "v",
+   "ts": "3579",
+   "pid": "1944",
+   "args": {
+    "dumps": {
+     "process_totals": {
+      "peak_memory": "6204000",
+      "current_memory": "6204000"
+     }
+    }
+   }
+  },
+  {
+   "name": "1-vaiml_partition@vaip-pass_vaiml_partition",
+   "ph": "X",
+   "ts": "3583",
+   "pid": "1944",
+   "tid": "4484",
+   "args": {
+    "memUsage": {
+     "peakMemoryInBytes": "102776832",
+     "currentMemoryInBytes": "14630912"
+    }
+   },
+   "dur": "123644"
+  },
+  {
+   "id": "1-vaiml_partition@vaip-pass_vaiml_partition_mem_usage_1",
+   "ph": "v",
+   "ts": "3583",
+   "pid": "1944",
+   "args": {
+    "dumps": {
+     "process_totals": {
+      "peak_memory": "6204000",
+      "current_memory": "6204000"
+     }
+    }
+   }
+  },
+  {
+   "id": "1-vaiml_partition@vaip-pass_vaiml_partition_mem_usage_2",
+   "ph": "v",
+   "ts": "127227",
+   "pid": "1944",
+   "args": {
+    "dumps": {
+     "process_totals": {
+      "peak_memory": "6ff8000",
+      "current_memory": "6ff8000"
+     }
+    }
+   }
+  },
+  {
+   "name": "update_cache",
+   "ph": "X",
+   "ts": "3530",
+   "pid": "1944",
+   "tid": "4484",
+   "args": {
+    "memUsage": {
+     "peakMemoryInBytes": "102707200",
+     "currentMemoryInBytes": "14704640"
+    }
+   },
+   "dur": "123735"
+  },
+  {
+   "id": "update_cache_mem_usage_1",
+   "ph": "v",
+   "ts": "3530",
+   "pid": "1944",
+   "args": {
+    "dumps": {
+     "process_totals": {
+      "peak_memory": "61f3000",
+      "current_memory": "61f3000"
+     }
+    }
+   }
+  },
+  {
+   "id": "update_cache_mem_usage_2",
+   "ph": "v",
+   "ts": "127266",
+   "pid": "1944",
+   "args": {
+    "dumps": {
+     "process_totals": {
+      "peak_memory": "6ff9000",
+      "current_memory": "6ff9000"
+     }
+    }
+   }
+  }
+ ],
+ "cacheFiles": [
+  "context.json"
+ ]
+}

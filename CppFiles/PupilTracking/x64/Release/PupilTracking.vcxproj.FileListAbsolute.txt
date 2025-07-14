@@ -1,0 +1,2 @@
+C:\Users\VETi\source\repos\PupilTracking\x64\Release\onnxruntime.dll
+C:\Users\VETi\source\repos\PupilTracking\x64\Release\onnxruntime_providers_shared.dll

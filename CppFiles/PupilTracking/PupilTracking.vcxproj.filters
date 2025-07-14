@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\videos">
+      <UniqueIdentifier>{dc3bf225-970c-40b0-b94a-d2a5e97932e3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="tracking_methods.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="npu_util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\..\..\..\..\Desktop\Pupil\haarcascade_eye.xml">
+      <Filter>Source Files</Filter>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\onnxruntime.dll" />
+    <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\onnxruntime_providers_shared.dll" />
+    <None Include="vitisai_congif.json" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\..\..\..\..\..\Desktop\Pupil\videos\1.mp4">
+      <Filter>Source Files\videos</Filter>
+    </Media>
+    <Media Include="..\..\..\..\..\..\Desktop\Pupil\videos\2L.mp4">
+      <Filter>Source Files\videos</Filter>
+    </Media>
+    <Media Include="..\..\..\..\..\..\Desktop\Pupil\videos\3L.mp4">
+      <Filter>Source Files\videos</Filter>
+    </Media>
+    <Media Include="..\..\..\..\..\..\Desktop\Pupil\videos\4.mp4">
+      <Filter>Source Files\videos</Filter>
+    </Media>
+    <Media Include="..\..\..\..\..\..\Desktop\Pupil\videos\alex.mp4">
+      <Filter>Source Files\videos</Filter>
+    </Media>
+    <Media Include="..\..\..\..\..\..\Desktop\Pupil\videos\igor1.mp4">
+      <Filter>Source Files\videos</Filter>
+    </Media>
+    <Media Include="..\..\..\..\..\..\Desktop\Pupil\videos\igor2L.mp4">
+      <Filter>Source Files\videos</Filter>
+    </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="tracking_methods.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="npu_util.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
