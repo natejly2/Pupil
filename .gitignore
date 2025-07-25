@@ -1,0 +1,4 @@
+*.png
+*.keras
+!docImages/*.png
+*.mp4
