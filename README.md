@@ -64,7 +64,7 @@ Using OpenCV’s pretrained Haar Cascade classifiers ([link](https://docs.opencv
 Assuming the pupil is the darkest region in the cropped eye image, we perform a grid search to locate the darkest square region and use its average intensity as a threshold baseline for binarization.
 
 **Grid Search Calculation:**  
-Let the image be divided into \(N 	imes N\) grid cells, and let \(G_{i,j}\) be the set of pixel intensities in the cell at row \(i\), column \(j\). Then, the mean intensity \(\mu_{i,j}\) of each cell is:
+Let the image be divided into NxN grid cells, and let $`G_{i,j}`$ be the set of pixel intensities in the cell at row $`i`$, column $`j`$. Then, the mean intensity $`\mu_{i,j}`$ of each cell is:
 
 $`\mu_{i,j} = \frac{1}{|G_{i,j}|} \sum_{(x,y) \in G_{i,j}} I(x, y)`$
 
@@ -72,7 +72,7 @@ The **darkest region** is found by:
 
 $`\mu_{i,j} = \frac{1}{|G_{i,j}|} \sum_{(x,y) \in G_{i,j}} I(x, y)`$
 
-The value \(\mu_{i^*, j^*}\) becomes the **dark baseline threshold** for later steps.
+The value $`\mu_{i^*, j^*}`$ becomes the **dark baseline threshold** for later steps.
 
 ![Eye crop](docImages/3.png)
 
@@ -83,7 +83,7 @@ The value \(\mu_{i^*, j^*}\) becomes the **dark baseline threshold** for later s
 The image is thresholded at multiple values offset from the dark baseline. This helps handle lighting variability and different pupil contrasts across frames. Each thresholded image highlights possible pupil candidates.
 
 **Binary Thresholding Function:**  
-Let \(I(x, y)\) be the grayscale intensity at pixel \((x, y)\), and \(T\) be the threshold value (e.g., dark baseline + 21). Then the binarized image \(B(x, y)\) is:
+Let $`I(x, y)`$ be the grayscale intensity at pixel $`(x, y)`$, and $`T`$ be the threshold value (e.g., dark baseline + 21). Then the binarized image $`B(x, y)`$ is:
 
 $`B(x, y) = \begin{cases} 255 & \text{if } I(x, y) < T \\ 0   & \text{otherwise} \end{cases}`$
 
@@ -108,7 +108,7 @@ Using least squares regression, we fit an ellipse to the point cloud of contour 
 Let the original contour points be:
 $`P = \{ (x_i, y_i) \mid i = 1 \ldots N \}`$
 
-1. Compute the average \(y\)-value (vertical midpoint):
+1. Compute the average $`y`$-value (vertical midpoint):
 
 $`\bar{y} = \frac{1}{N} \sum_{i=1}^{N} y_i`$
 
@@ -116,7 +116,7 @@ $`\bar{y} = \frac{1}{N} \sum_{i=1}^{N} y_i`$
 
 $`P_{\text{bottom}} = \{ (x_i, y_i) \in P \mid y_i > \bar{y} \}`$
 
-3. Reflect each bottom point across \(y = \bar{y}\):
+3. Reflect each bottom point across $`y = \bar{y}`$:
 
 $`(x_i, y_i) \mapsto (x_i, 2\bar{y} - y_i)`$
 
@@ -171,9 +171,9 @@ To ensure smooth and consistent tracking across frames, the algorithm applies:
 
 2. **Exponential Moving Average (EMA)**  
    Let:
-   - \(E_t\) be the ellipse parameters at frame \(t\)  
-   - \(\alpha\) be the smoothing factor (between 0 and 1)  
-   - \(\mathrm{EMA}_t\) be the smoothed value at frame \(t\)  
+   - $`E_t`$ be the ellipse parameters at frame $`t`$  
+   - $`\alpha`$ be the smoothing factor (between 0 and 1)  
+   - $`\mathrm{EMA}_t`$ be the smoothed value at frame $`t`$  
 
    Update rule:
 
