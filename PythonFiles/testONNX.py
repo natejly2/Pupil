@@ -10,11 +10,11 @@ import onnxruntime as ort
 from tracking_methods import coarse_find, process_eye_crop, fit_ellipse, apply_smoothing
 
 # ——— LIME imports ———
-from lime import lime_image
+# from lime import lime_image
 from skimage.segmentation import mark_boundaries
 
 # ——— Load ONNX model ———
-session = ort.InferenceSession("model.onnx", providers=["VitisAIExecutionProvider"])
+session = ort.InferenceSession("PythonFiles\model7.onnx", providers=["VitisAIExecutionProvider"])
 input_name = session.get_inputs()[0].name
 output_name = session.get_outputs()[0].name
 print("Registered providers:", ort.get_available_providers())
@@ -40,9 +40,9 @@ def segmentation_prob(rgb_images):
     return np.array(out)
 
 # ——— Set up LIME explainer ———
-explainer = lime_image.LimeImageExplainer()
+# explainer = lime_image.LimeImageExplainer()
 
-cap = cv2.VideoCapture("C:/Desktop/Pupil/PythonFiles/Media/videos/2L.mp4")
+cap = cv2.VideoCapture(r"C:\Projects\pupil_detection\pupil_detection-main\PythonFiles\Media\videos\jg1.mp4")
 if not cap.isOpened():
     raise IOError("Cannot open video")
 
@@ -51,7 +51,7 @@ x_alpha, y_alpha = .75, .75
 rotation_alpha = 1
 width_alpha, height_alpha = .5, .5
 
-top_half = True
+top_half = False
 ema = None
 prev_eyes = None
 prev_ellipse = None
@@ -95,6 +95,8 @@ while True:
 
     # Crop and preprocess eye patch
     eye_gray, x, y, size = process_eye_crop(frame, eyes)
+    # run clahe on eye_gray
+
     eye_gray = cv2.resize(eye_gray, (128,128)) / 255.0
     eye_input = eye_gray.astype(np.float32).reshape(1,128,128,1)
 
@@ -102,29 +104,31 @@ while True:
     pred_mask = session.run([output_name], {input_name: eye_input})[0]
     pred_mask = (pred_mask>0.5).astype(np.uint8).squeeze()
     pred_mask = cv2.resize(pred_mask, (eye_input.shape[2], eye_input.shape[1]))
-
+    cv2.imshow("pred_mask", pred_mask * 255)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
     # ——— LIME explanation (once) ———
-    if not lime_done:
-        # convert grayscale to RGB for LIME
-        img_rgb = (eye_gray*255).astype(np.uint8)
-        img_rgb = np.stack([img_rgb]*3, axis=2)
-        explanation = explainer.explain_instance(
-            image=img_rgb,
-            classifier_fn=segmentation_prob,
-            top_labels=1,
-            hide_color=0,
-            num_samples=1000
-        )
-        temp, mask = explanation.get_image_and_mask(
-            explanation.top_labels[0],
-            positive_only=True,
-            num_features=5,
-            hide_rest=False
-        )
-        lime_overlay = mark_boundaries(temp, mask)
-        # show it
-        cv2.imshow("LIME Explanation", lime_overlay[...,::-1])  # RGB->BGR for OpenCV
-        lime_done = True
+    # if not lime_done:
+    #     # convert grayscale to RGB for LIME
+    #     img_rgb = (eye_gray*255).astype(np.uint8)
+    #     img_rgb = np.stack([img_rgb]*3, axis=2)
+    #     explanation = explainer.explain_instance(
+    #         image=img_rgb,
+    #         classifier_fn=segmentation_prob,
+    #         top_labels=1,
+    #         hide_color=0,
+    #         num_samples=1000
+    #     )
+    #     temp, mask = explanation.get_image_and_mask(
+    #         explanation.top_labels[0],
+    #         positive_only=True,
+    #         num_features=5,
+    #         hide_rest=False
+    #     )
+    #     lime_overlay = mark_boundaries(temp, mask)
+    #     # show it
+    #     cv2.imshow("LIME Explanation", lime_overlay[...,::-1])  # RGB->BGR for OpenCV
+    #     lime_done = True
 
     # Fit ellipse on mask
     contours,_ = cv2.findContours(pred_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)

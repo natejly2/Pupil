@@ -2,3 +2,6 @@
 *.keras
 !docImages/*.png
 *.mp4
+__pycache__/
+*.py[cod]
+*$py.class

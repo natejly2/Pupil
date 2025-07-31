@@ -345,7 +345,7 @@ def display_results(frame, thresholded_images, contour_images, ellipse_images,
 
 def main():
 
-    video_path = "videos/2L.mp4"
+    video_path = r"PythonFiles\Media\videos\jg1.mp4"
     TOP = True
     debug = True
     x_alpha = .75

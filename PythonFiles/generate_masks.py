@@ -109,22 +109,18 @@ if __name__ == "__main__":
         # show the largest contour
         contour = max(contour[0], key=cv2.contourArea)
         # no convex here because bright spots
+        convex = cv2.convexHull(contour)
         export = np.zeros_like(eye_gray)
         # cv2.drawContours(eye_gray, [convex], -1, (255, 255, 255), 2)
-        cv2.drawContours(export, [contour], -1, 255, -1)
-        #cv2.imshow("images", eye_gray)
-        #cv2.imshow("export", export)
+        cv2.drawContours(export, [convex], -1, 255, -1)
+        # cv2.imshow("images", eye_gray)
+        # cv2.imshow("export", export)
         cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", eye_gray)
         cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", export)
         # cv2.imwrite(f"frames/{i}.png", frame)
         frame_idx += 1
 
-        # flip across y axis
-        cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", cv2.flip(eye_gray, 1))
-        cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", cv2.flip(export, 1))
-        # cv2.imwrite(f"frames/{i}.png", frame)
-        frame_idx += 1
-
+        # 
 
         # brightness augment
         bright = np.ones_like(eye_gray) * np.random.randint(10, 70)
@@ -139,6 +135,35 @@ if __name__ == "__main__":
         # cv2.imwrite(f"frames/{i}.png", frame)
         frame_idx += 1
 
+        # brighten image pixels where mask is white
+        bright_pixels = eye_gray.copy()
+
+        # Create boolean mask: inside the 'export' mask AND pixel is dark
+        maskeye = (export == 255)
+        dark_pixels = (eye_gray < 50)
+        target_pixels = maskeye & dark_pixels  # only dark pixels in the mask
+
+        # Generate random brightness to add
+        added_brightness = np.random.randint(30, 50)
+        # feather edges
+        added_brightness = cv2.GaussianBlur(np.ones_like(eye_gray) * added_brightness, (9, 9), 0)
+        temp = cv2.add(eye_gray, added_brightness)
+
+        # Apply only to target pixels
+        bright_pixels[target_pixels] = temp[target_pixels]
+
+        # Optional: blur the final result
+        bright_pixels = cv2.GaussianBlur(bright_pixels, (5, 5), 0)
+        cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", bright_pixels)
+        cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", export)
+        # cv2.imshow("bright_pixels", bright_pixels)
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     break
+        frame_idx += 1
+
+        cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", cv2.flip(bright_pixels, 1))
+        cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", cv2.flip(export, 1))
+        frame_idx += 1
 
         # subtract brightness augment
         bright = np.ones_like(eye_gray) * np.random.randint(10, 70)
@@ -153,30 +178,30 @@ if __name__ == "__main__":
         frame_idx += 1
 
         # sharpness augment
-        sharpval = np.random.randint(5, 10)
-        kernel = np.array([[0, -1, 0],
-                           [-1, sharpval, -1],
-                           [0, -1, 0]])
-        sharp = cv2.filter2D(eye_gray, -1, kernel)
-        #cv2.imshow("sharp", sharp)
-        cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", sharp)
-        cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", export)
-        frame_idx += 1
-        cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", cv2.flip(sharp, 1))
-        cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", cv2.flip(export, 1))
-        frame_idx += 1
+        # sharpval = np.random.randint(5, 10)
+        # kernel = np.array([[0, -1, 0],
+        #                    [-1, sharpval, -1],
+        #                    [0, -1, 0]])
+        # sharp = cv2.filter2D(eye_gray, -1, kernel)
+        # #cv2.imshow("sharp", sharp)
+        # cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", sharp)
+        # cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", export)
+        # frame_idx += 1
+        # cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", cv2.flip(sharp, 1))
+        # cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", cv2.flip(export, 1))
+        # frame_idx += 1
 
         #decrease sharpness augment
-        kernel = np.ones((5, 5), np.float32) / 25
-        sharpdown = cv2.filter2D(eye_gray, -1, kernel)
-        #cv2.imshow("sharpdown", sharpdown)
-        cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", sharpdown)
-        cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", export)
-        frame_idx += 1
+        # kernel = np.ones((5, 5), np.float32) / 25
+        # sharpdown = cv2.filter2D(eye_gray, -1, kernel)
+        # #cv2.imshow("sharpdown", sharpdown)
+        # cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", sharpdown)
+        # cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", export)
+        # frame_idx += 1
 
-        cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", cv2.flip(sharpdown, 1))
-        cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", cv2.flip(export, 1))
-        frame_idx += 1
+        # cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", cv2.flip(sharpdown, 1))
+        # cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", cv2.flip(export, 1))
+        # frame_idx += 1
 
         #contrast augment
         contrast = np.random.uniform(0.5, 1.5)
@@ -191,15 +216,15 @@ if __name__ == "__main__":
         frame_idx += 1
 
         # blur augment
-        blurval = np.random.randint(1, 6) * 2 - 1
-        blur = cv2.GaussianBlur(eye_gray, (blurval, blurval), 0)
-        #cv2.imshow("blur", blur)
-        cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", blur)
-        cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", export)
-        frame_idx += 1
-        cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", cv2.flip(blur, 1))
-        cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", cv2.flip(export, 1))
-        frame_idx += 1
+        # blurval = np.random.randint(1, 6) * 2 - 1
+        # blur = cv2.GaussianBlur(eye_gray, (blurval, blurval), 0)
+        # #cv2.imshow("blur", blur)
+        # cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", blur)
+        # cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", export)
+        # frame_idx += 1
+        # cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", cv2.flip(blur, 1))
+        # cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", cv2.flip(export, 1))
+        # frame_idx += 1
 
         # gamma augment
         gamma = np.random.uniform(0.5, 2.0)
@@ -231,18 +256,18 @@ if __name__ == "__main__":
         cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", cv2.flip(rotated_mask, 1))
         frame_idx += 1
 
-        # stretch/compress augment
-        stretch_factor = np.random.uniform(0.8, 1.2)
-        stretched_gray = cv2.resize(eye_gray, None, fx=stretch_factor, fy=1.0)
-        stretched_mask = cv2.resize(export, None, fx=stretch_factor, fy=1.0)
-        cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", stretched_gray)
-        #cv2.imshow("stretched", stretched_gray)
-        cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", stretched_mask)
-        frame_idx += 1
+        # # stretch/compress augment
+        # stretch_factor = np.random.uniform(0.8, 1.2)
+        # stretched_gray = cv2.resize(eye_gray, None, fx=stretch_factor, fy=1.0)
+        # stretched_mask = cv2.resize(export, None, fx=stretch_factor, fy=1.0)
+        # cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", stretched_gray)
+        # #cv2.imshow("stretched", stretched_gray)
+        # cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", stretched_mask)
+        # frame_idx += 1
 
-        cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", cv2.flip(stretched_gray, 1))
-        cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", cv2.flip(stretched_mask, 1))
-        frame_idx += 1
+        # cv2.imwrite(f"{IMAGE_FOLDER}/{frame_idx}.png", cv2.flip(stretched_gray, 1))
+        # cv2.imwrite(f"{MASKS_FOLDER}/{frame_idx}.png", cv2.flip(stretched_mask, 1))
+        # frame_idx += 1
         
 
 
